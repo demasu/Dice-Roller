@@ -6,15 +6,6 @@
 #include <string>
 #include <vector>
 
-// Function declarations
-
-int main(int argc, char *argv[]);
-void parse_options(std::vector<std::string> user_arguments, int &num_dice, int &die_type, int &modifier);
-void interactive(int argc, char *argv[]);
-int handle_input(std::string &input, bool &run);
-void roll_dice(int num_dice, int die_type, int modifier);
-void print_help_text(char *argv[]);
-
 // Enum for error codes
 enum Errors {
     INVALID_NUMBER_DIE,
@@ -35,6 +26,16 @@ std::string error_names[7] = {
     "UNABLE_CONVERT_MODIFIER",
     "PRINT_HELP_MESSAGE"};
 
+// Function declarations
+
+int main(int argc, char *argv[]);
+void parse_options(std::vector<std::string> user_arguments, int &num_dice, int &die_type, int &modifier);
+void interactive(int argc, char *argv[]);
+int handle_input(std::string &input, bool &run);
+void roll_dice(int num_dice, int die_type, int modifier);
+void print_help_text(std::string program_name);
+void handle_errors(Errors e);
+
 int main(int argc, char *argv[]) {
     int num_dice = 0;
     int die_type = 0;
@@ -48,43 +49,18 @@ int main(int argc, char *argv[]) {
     }
     else {
         // Parse command line options
+        std::string program_name;
         try {
             std::vector<std::string> user_arguments;
+            program_name = argv[0];
             for ( int i = 1; i < argc; i++ ) {
                 user_arguments.push_back(argv[i]);
             }
             parse_options(user_arguments, num_dice, die_type, modifier);
         }
         catch ( Errors e ) {
-            switch ( e ) {
-                case INVALID_NUMBER_DIE:
-                    std::cout << "[" << error_names[e] << "] "
-                              << "Invalid number of dice given" << std::endl;
-                    break;
-                case INVALID_DIE_TYPE:
-                    std::cout << "[" << error_names[e] << "] "
-                              << "Invalid die type given" << std::endl;
-                    break;
-                case INVALID_MODIFIER:
-                    std::cout << "[" << error_names[e] << "] "
-                              << "Invalid modifier given" << std::endl;
-                    break;
-                case UNABLE_CONVERT_NUM_DIE:
-                    std::cout << "[" << error_names[e] << "] "
-                              << "Unable to convert the number of dice given into a number" << std::endl;
-                    break;
-                case UNABLE_CONVERT_DIE_TYPE:
-                    std::cout << "[" << error_names[e] << "] "
-                              << "Unable to convert the type of die given into a number" << std::endl;
-                    break;
-                case UNABLE_CONVERT_MODIFIER:
-                    std::cout << "[" << error_names[e] << "] "
-                              << "Unable to convert the modifier given into a number" << std::endl;
-                    break;
-                case PRINT_HELP_MESSAGE:
-                    break;
-            }
-            print_help_text(argv);
+            handle_errors(e);
+            print_help_text(program_name);
 
             return 1;
         }
@@ -149,7 +125,6 @@ void parse_options(std::vector<std::string> user_arguments, int &num_dice, int &
                     modifier_str += a[j];
                 }
                 else {
-                    std::cerr << "# There was an error parsing the modifier string: [" << a << "]" << std::endl;
                     Errors e = INVALID_MODIFIER;
                     throw e;
                 }
@@ -230,32 +205,7 @@ void interactive(int argc, char *argv[]) {
             std::cout << std::endl;
         }
         catch ( Errors e ) {
-            switch ( e ) {
-                case INVALID_NUMBER_DIE:
-                    std::cout << "[" << error_names[e] << "] "
-                              << "Invalid number of dice given" << std::endl;
-                    break;
-                case INVALID_DIE_TYPE:
-                    std::cout << "[" << error_names[e] << "] "
-                              << "Invalid die type given" << std::endl;
-                    break;
-                case INVALID_MODIFIER:
-                    std::cout << "[" << error_names[e] << "] "
-                              << "Invalid modifier given" << std::endl;
-                    break;
-                case UNABLE_CONVERT_NUM_DIE:
-                    std::cout << "[" << error_names[e] << "] "
-                              << "Unable to convert the number of dice given into a number" << std::endl;
-                    break;
-                case UNABLE_CONVERT_DIE_TYPE:
-                    std::cout << "[" << error_names[e] << "] "
-                              << "Unable to convert the type of die given into a number" << std::endl;
-                    break;
-                case UNABLE_CONVERT_MODIFIER:
-                    std::cout << "[" << error_names[e] << "] "
-                              << "Unable to convert the modifier given into a number" << std::endl;
-                    break;
-            }
+            handle_errors(e);
         }
     }
 
@@ -315,19 +265,52 @@ void roll_dice(int num_dice, int die_type, int modifier) {
     return;
 }
 
-void print_help_text(char *argv[]) {
-    std::string prog_name = argv[0];
-
-    printf("Usage: %s: [--help|h] [die] [modifier]\n", prog_name.c_str());
+void print_help_text(std::string program_name) {
+    printf("Usage: %s: [--help|h] [die] [modifier]\n", program_name.c_str());
     printf("Examples:\n");
-    printf("\t%s 1d6\n", prog_name.c_str());
+    printf("\t%s 1d6\n", program_name.c_str());
     printf("\t\tRolls one d6 and prints the result\n");
-    printf("\t%s 2d6 +2\n", prog_name.c_str());
+    printf("\t%s 2d6 +2\n", program_name.c_str());
     printf("\t\tRolls two d6, then adds two and prints the result\n");
-    printf("\t%s d20\n", prog_name.c_str());
+    printf("\t%s d20\n", program_name.c_str());
     printf("\t\tRolls one d20 and prints the result\n");
-    printf("\t%s\n", prog_name.c_str());
+    printf("\t%s\n", program_name.c_str());
     printf("\t\tRuns the program in interactive mode\n");
+
+    return;
+}
+
+void handle_errors(Errors e) {
+    switch ( e ) {
+        case INVALID_NUMBER_DIE:
+            std::cout << "[" << error_names[e] << "] "
+                      << "Invalid number of dice given" << std::endl;
+            break;
+        case INVALID_DIE_TYPE:
+            std::cout << "[" << error_names[e] << "] "
+                      << "Invalid die type given" << std::endl;
+            break;
+        case INVALID_MODIFIER:
+            std::cout << "[" << error_names[e] << "] "
+                      << "Invalid modifier given" << std::endl;
+            break;
+        case UNABLE_CONVERT_NUM_DIE:
+            std::cout << "[" << error_names[e] << "] "
+                      << "Unable to convert the number of dice given into a number" << std::endl;
+            break;
+        case UNABLE_CONVERT_DIE_TYPE:
+            std::cout << "[" << error_names[e] << "] "
+                      << "Unable to convert the type of die given into a number" << std::endl;
+            break;
+        case UNABLE_CONVERT_MODIFIER:
+            std::cout << "[" << error_names[e] << "] "
+                      << "Unable to convert the modifier given into a number" << std::endl;
+            break;
+        case PRINT_HELP_MESSAGE:
+            break;
+        default:
+            break;
+    }
 
     return;
 }
