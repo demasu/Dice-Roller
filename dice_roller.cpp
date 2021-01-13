@@ -22,16 +22,18 @@ enum Errors {
     INVALID_MODIFIER,
     UNABLE_CONVERT_NUM_DIE,
     UNABLE_CONVERT_DIE_TYPE,
-    UNABLE_CONVERT_MODIFIER
+    UNABLE_CONVERT_MODIFIER,
+    PRINT_HELP_MESSAGE
 };
 
-std::string error_names[6] = {
+std::string error_names[7] = {
     "INVALID_NUMBER_DIE",
     "INVALID_DIE_TYPE",
     "INVALID_MODIFIER",
     "UNABLE_CONVERT_NUM_DIE",
     "UNABLE_CONVERT_DIE_TYPE",
-    "UNABLE_CONVERT_MODIFIER"};
+    "UNABLE_CONVERT_MODIFIER",
+    "PRINT_HELP_MESSAGE"};
 
 int main(int argc, char *argv[]) {
     int num_dice = 0;
@@ -79,6 +81,8 @@ int main(int argc, char *argv[]) {
                     std::cout << "[" << error_names[e] << "] "
                               << "Unable to convert the modifier given into a number" << std::endl;
                     break;
+                case PRINT_HELP_MESSAGE:
+                    break;
             }
             print_help_text(argv);
 
@@ -105,7 +109,8 @@ void parse_options(std::vector<std::string> user_arguments, int &num_dice, int &
     for ( int i = 0; i < user_arguments.size(); i++ ) {
         std::string a = user_arguments[i];
         if ( user_arguments[i] == "--help" || user_arguments[i] == "--h" ) {
-            throw -1;
+            Errors e = PRINT_HELP_MESSAGE;
+            throw e;
         }
         for ( int j = 0; j < a.length(); j++ ) {
             if ( i < 1 ) {
