@@ -73,8 +73,6 @@ Temporary Items
 
 ### VisualStudioCode ###
 .vscode/*
-!.vscode/tasks.json
-!.vscode/launch.json
 *.code-workspace
 
 ### VisualStudioCode Patch ###
@@ -114,3 +112,5 @@ zsdoc/data
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,visualstudiocode,c++,zsh
 
+*.dSYM
+*.swp
