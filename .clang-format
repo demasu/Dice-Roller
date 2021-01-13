@@ -3,18 +3,18 @@ IndentWidth: 4
 ColumnLimit: 0
 AlignConsecutiveAssignments: true
 AlignTrailingComments: true
-AllowShortBlocksOnASingleLine: false
+# AllowShortBlocksOnASingleLine: false
 AllowShortCaseLabelsOnASingleLine: false
 AlwaysBreakAfterReturnType: None
-#AllowShortBlocksOnASingleLine: Empty
+AllowShortBlocksOnASingleLine: Empty
 AllowShortIfStatementsOnASingleLine: Never
 AllowShortLoopsOnASingleLine: false
 BreakBeforeBraces: Custom
 BraceWrapping:
   AfterCaseLabel: false
   AfterClass: false
-  AfterControlStatement: false
-#  AfterControlStatement: Never
+  # AfterControlStatement: false
+  AfterControlStatement: Never
   AfterEnum: false
   AfterFunction: false
   AfterNamespace: false
@@ -30,7 +30,7 @@ IndentPPDirectives: BeforeHash
 SpaceBeforeAssignmentOperators: true
 SpaceBeforeParens: ControlStatements
 SpaceBeforeRangeBasedForLoopColon: true
-#SpaceBeforeSquareBrackets: false
-#SpaceInEmptyBlock: false
+SpaceBeforeSquareBrackets: false
+SpaceInEmptyBlock: false
 SpaceInEmptyParentheses: false
-#SpacesInConditionalStatement: true
+SpacesInConditionalStatement: true
